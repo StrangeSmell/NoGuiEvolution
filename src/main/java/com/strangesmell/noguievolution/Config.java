@@ -71,17 +71,13 @@ public class Config
             .comment("move distance coefficient")
             .defineInRange("moveNumberCoefficient", 0.00001, 0, Double.MAX_VALUE);
 
-    private static final ForgeConfigSpec.DoubleValue SWIM_SPEED_LIMIT = BUILDER
-            .comment("swim speed limit")
-            .defineInRange("swimSpeedLimit", 0.5, 0, Double.MAX_VALUE);
-
     private static final ForgeConfigSpec.IntValue SWIM_NUMBER_LIMIT = BUILDER
             .comment("swim distance limit")
-            .defineInRange("swimNumberLimit", 10000, 0, Integer.MAX_VALUE);
+            .defineInRange("swimNumberLimit", 20000, 0, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue SWIM_NUMBER_COEFFICIENT = BUILDER
             .comment("swim number coefficient")
-            .defineInRange("swimNumberCoefficient", 0.001, 0, Double.MAX_VALUE);
+            .defineInRange("swimNumberCoefficient", 0.0001, 0, Double.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue CLIMB_SPEED_LIMIT = BUILDER
             .comment("climb speed limit")
@@ -133,7 +129,6 @@ public class Config
     public static double jumpNumberCoefficient;
     public static int moveNumberLimit;
     public static double moveNumberCoefficient;
-    public static double swimSpeedLimit;
     public static double swimNumberCoefficient;
     public static int swimNumberLimit;
     public static double climbSpeedLimit;
@@ -160,7 +155,6 @@ public class Config
         jumpNumberCoefficient = JUMP_NUMBER_COEFFICIENT.get();
         moveNumberLimit = MOVE_NUMBER_LIMIT.get();
         moveNumberCoefficient = MOVE_NUMBER_COEFFICIENT.get();
-        swimSpeedLimit = SWIM_SPEED_LIMIT.get();
         swimNumberLimit = SWIM_NUMBER_LIMIT.get();
         swimNumberCoefficient = SWIM_NUMBER_COEFFICIENT.get();
         climbSpeedLimit = CLIMB_SPEED_LIMIT.get();

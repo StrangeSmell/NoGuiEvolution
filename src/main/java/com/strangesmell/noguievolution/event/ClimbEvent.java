@@ -10,18 +10,17 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.core.jmx.Server;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 
 public class ClimbEvent {
     @SubscribeEvent
-
-    public static void climbEvent(MovementInputUpdateEvent event){
-        Player player = event.getEntity();
+    public static void climbEvent(PlayerEvent event){
+       Player player = event.getEntity();
+       if(player==null) return;
         BlockState blockState = player.getBlockStateOn();
         boolean canLadder;
         canLadder = player.getBlockStateOn().getBlock().isLadder(blockState, player.level(),player.getOnPos(),player);
@@ -30,9 +29,9 @@ public class ClimbEvent {
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
                 count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.CLIMB_ONE_CM));
-                AttributeModifier minedCountModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
+                AttributeModifier countModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
+                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(countModifier);
             }
 
             if(event.getEntity().level().isClientSide){
@@ -43,15 +42,21 @@ public class ClimbEvent {
             if(count>= Config.climbNumberLimit) count = Config.climbNumberLimit;
 
             double time = count*Config.climbNumberCoefficient;
-            Utils.limit(time, Config.climbSpeedLimit);
             double x = player.getDeltaMovement().get(Direction.Axis.X);
             double y = player.getDeltaMovement().get(Direction.Axis.Y);
             double z = player.getDeltaMovement().get(Direction.Axis.Z);
-            double limit = time;
-            if(y>-limit&&y<limit){
-                player.setDeltaMovement(x,y*(1+time),z);
-            }
+
+            float i = 1;
+            if(y<0) i=-1;
+
+            y=i*0.2*(1+time);
+
+            Utils.limit(y, Config.climbSpeedLimit);
+            if(y<-Config.climbSpeedLimit) y=-Config.climbSpeedLimit;
+
+            player.setDeltaMovement(x,y,z);
+
+            if(player.isShiftKeyDown()) player.setDeltaMovement(x,0,z);
         }
     }
-
 }

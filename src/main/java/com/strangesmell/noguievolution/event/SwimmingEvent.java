@@ -2,15 +2,15 @@ package com.strangesmell.noguievolution.event;
 
 import com.strangesmell.noguievolution.Config;
 import com.strangesmell.noguievolution.NoGuiEvolution;
-import com.strangesmell.noguievolution.Util.Utils;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -18,9 +18,10 @@ import net.minecraftforge.fml.common.Mod;
 
 public class SwimmingEvent {
     @SubscribeEvent
-    public static void swimmingEvent(MovementInputUpdateEvent event){
-        Player player = event.getEntity();
-        if(player.isSwimming()){
+    public static void swimmingEvent(LivingEvent.LivingJumpEvent event){
+        LivingEntity livingEntity = event.getEntity();
+        if(livingEntity instanceof Player){
+            Player player = (Player) livingEntity;
             int count = 0;
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
@@ -37,16 +38,13 @@ public class SwimmingEvent {
 
             if(count>=Config.swimNumberLimit) count = Config.swimNumberLimit;
 
-            double time = count*Config.swimNumberCoefficient;
+            double addCount = count*Config.swimNumberCoefficient;
 
-            Utils.limit(time,Config.swimSpeedLimit);
-            double x = player.getDeltaMovement().get(Direction.Axis.X);
-            double y = player.getDeltaMovement().get(Direction.Axis.Y);
-            double z = player.getDeltaMovement().get(Direction.Axis.Z);
-            double limit = time;
-            if(x>-limit&&y>-limit&&z>-limit&&x<limit&&y<limit&&z<limit){
-                player.setDeltaMovement(x*(1+time),y*(1+time),z*(1+time));
-            }
+
+            AttributeModifier countModifier = new AttributeModifier(" countModifier ", addCount, AttributeModifier.Operation.ADDITION);
+            player.getAttribute(ForgeMod.SWIM_SPEED.get()).removeModifiers();
+            player.getAttribute(ForgeMod.SWIM_SPEED.get()).addPermanentModifier(countModifier);
+
         }
     }
 }
