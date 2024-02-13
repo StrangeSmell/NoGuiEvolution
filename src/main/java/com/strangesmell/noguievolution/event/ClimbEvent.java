@@ -32,11 +32,8 @@ public class ClimbEvent {
                 AttributeModifier countModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(countModifier);
-            }
-
-            if(event.getEntity().level().isClientSide){
-                LocalPlayer localPlayer =(LocalPlayer) event.getEntity();
-                count =(int) localPlayer.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+            }else {
+                count =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
 
             if(count>= Config.climbNumberLimit) count = Config.climbNumberLimit;
@@ -51,7 +48,7 @@ public class ClimbEvent {
 
             y=i*0.2*(1+time);
 
-            Utils.limit(y, Config.climbSpeedLimit);
+            y = Math.min(y, Config.climbSpeedLimit);
             if(y<-Config.climbSpeedLimit) y=-Config.climbSpeedLimit;
 
             player.setDeltaMovement(x,y,z);

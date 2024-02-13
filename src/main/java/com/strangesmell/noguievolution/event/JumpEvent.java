@@ -24,7 +24,7 @@ public class JumpEvent {
     @SubscribeEvent
     public static void JumpEvent(LivingEvent.LivingJumpEvent event){
         LivingEntity livingEntity = event.getEntity();
-        if(livingEntity instanceof Player){
+        if(livingEntity instanceof Player ){
             int jumpCount=0;
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
@@ -32,11 +32,8 @@ public class JumpEvent {
                 AttributeModifier minedCountModifier = new AttributeModifier(" jumpCount ", jumpCount, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
-            }
-
-            if(event.getEntity().level().isClientSide){
-                LocalPlayer localPlayer =(LocalPlayer) event.getEntity();
-                jumpCount =(int) localPlayer.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+            }else{
+                jumpCount =(int) livingEntity.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
 
             Player player = (Player) event.getEntity();

@@ -23,23 +23,21 @@ public class AttackEvent {
     @SubscribeEvent
     public static void LivingAttack(LivingHurtEvent event){
         Entity player = event.getSource().getEntity();
-        Entity entity = event.getEntity();
-        if(player instanceof Player && entity instanceof LivingEntity){
-            player = (Player) player;
-            ServerPlayer serverPlayer = (ServerPlayer) player;
-            entity = (LivingEntity) entity;
 
-            ItemStack itemStack = ((ServerPlayer) player).getItemInHand(((ServerPlayer) player).getUsedItemHand());
+        if(player instanceof ServerPlayer serverPlayer){
+
+            LivingEntity livingEntity = event.getEntity();
+            ItemStack itemStack = serverPlayer.getItemInHand(((ServerPlayer) player).getUsedItemHand());
 
             boolean isInTools =  itemStack.is(Tags.Items.TOOLS)||itemStack.is(Tags.Items.TOOLS_TRIDENTS)||itemStack.is(Tags.Items.TOOLS_SHIELDS)||itemStack.is(Tags.Items.TOOLS_BOWS)||itemStack.is(Tags.Items.TOOLS_CROSSBOWS);
             int toolUseCount = serverPlayer.getStats().getValue(Stats.ITEM_USED, itemStack.getItem());
             if(!isInTools) toolUseCount = 0;
 
-            int killCount = serverPlayer.getStats().getValue(Stats.ENTITY_KILLED,entity.getType());
+            int killCount = serverPlayer.getStats().getValue(Stats.ENTITY_KILLED,livingEntity.getType());
 
-            if(killCount >= Config.killNumberLimitCoefficient*((LivingEntity) entity).getMaxHealth()*10 ) killCount = (int)(Config.killNumberLimitCoefficient* ((LivingEntity) entity).getMaxHealth()*10);
+            if(killCount >= Config.killNumberLimitCoefficient*livingEntity.getMaxHealth()*10 ) killCount = (int)(Config.killNumberLimitCoefficient* livingEntity.getMaxHealth()*10);
             if(toolUseCount>= Config.useNumberLimit) toolUseCount = Config.useNumberLimit;
-            event.setAmount( event.getAmount() + killCount * Config.killNumberCoefficient * ((LivingEntity) entity).getMaxHealth()*(float)Config.killNumberAttackCoefficient + toolUseCount * (float)Config.useNumberCoefficient );
+            event.setAmount( event.getAmount() + killCount * Config.killNumberCoefficient * livingEntity.getMaxHealth()*(float)Config.killNumberAttackCoefficient + toolUseCount * (float)Config.useNumberCoefficient );
         }
     }
 }

@@ -20,8 +20,7 @@ public class SwimmingEvent {
     @SubscribeEvent
     public static void swimmingEvent(LivingEvent.LivingJumpEvent event){
         LivingEntity livingEntity = event.getEntity();
-        if(livingEntity instanceof Player){
-            Player player = (Player) livingEntity;
+        if(livingEntity instanceof Player player){
             int count = 0;
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
@@ -29,17 +28,13 @@ public class SwimmingEvent {
                 AttributeModifier minedCountModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
+            }else {
+                count =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
 
-            if(event.getEntity().level().isClientSide){
-                LocalPlayer localPlayer =(LocalPlayer) event.getEntity();
-                count =(int) localPlayer.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
-            }
-
-            if(count>=Config.swimNumberLimit) count = Config.swimNumberLimit;
+            count = Math.min(count,Config.swimNumberLimit);
 
             double addCount = count*Config.swimNumberCoefficient;
-
 
             AttributeModifier countModifier = new AttributeModifier(" countModifier ", addCount, AttributeModifier.Operation.ADDITION);
             player.getAttribute(ForgeMod.SWIM_SPEED.get()).removeModifiers();

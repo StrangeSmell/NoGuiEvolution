@@ -28,13 +28,11 @@ public class DamageAbsorbEvent {
                 AttributeModifier minedCountModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
-            }
-            if(player.level().isClientSide()){
-                LocalPlayer localPlayer = (LocalPlayer) player;
-                count =(int) localPlayer.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+            }else{
+                count =(int)player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
             double damage = event.getAmount();
-            Utils.limit(count, Config.absorbNumberLimit);
+            count = Math.min(count, Config.absorbNumberLimit);
             if(Config.isPercentage){
                 event.setAmount((float) (damage*((Config.absorbNumberLimit-count*Config.absorbNumberCoefficient)/Config.absorbNumberLimit)));
             }else {

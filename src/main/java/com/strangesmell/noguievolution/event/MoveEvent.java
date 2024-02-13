@@ -20,8 +20,7 @@ public class MoveEvent {
     public static void moveEvent(LivingEvent.LivingJumpEvent event){
         LivingEntity livingEntity =  event.getEntity();
         if(livingEntity == null) return;
-        if(livingEntity instanceof Player){
-            Player player = (Player) livingEntity;
+        if(livingEntity instanceof Player player){
             double walkDistance=0;
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
@@ -30,11 +29,8 @@ public class MoveEvent {
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
 
-            }
-
-            if(event.getEntity().level().isClientSide){
-                LocalPlayer localPlayer =(LocalPlayer) event.getEntity();
-                walkDistance =(int) localPlayer.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+            }else {
+                walkDistance =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
             boolean isSprinting = player.isSprinting();
             Utils.modifier(player,walkDistance, Config.moveNumberCoefficient,Attributes.MOVEMENT_SPEED,Config.moveNumberLimit);

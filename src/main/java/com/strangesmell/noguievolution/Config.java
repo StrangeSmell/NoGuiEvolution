@@ -24,7 +24,7 @@ public class Config
             .comment("挖掘速度计算公式：基础速度*(1+minedCount*minedNumberCoefficient)")
             .comment("跳跃速度计算公式：x，y，z轴的初速度为分别为 各轴基础速度*(1+jumpCount*jumpNumberCoefficient)")
             .comment("移动速度计算公式：基础数值+moveCount*moveNumberCoefficient")
-            .comment("游泳速度计算公式：x，y，z轴的初速度为分别为 各轴基础速度*(1+swimNumber*swimNumberCoefficient)")
+            .comment("游泳速度计算公式：基础数值+swimCount*swimNumberCoefficient")
             .comment("攀爬速度计算公式：y轴的初速度为为 基础速度*(1+climbNumber*climbNumberCoefficient)")
             .comment("敲钟音量计算公式：基础数值+count*volumeCoefficient")
             .comment("敲钟音调计算公式：基础数值+count*pitchCoefficient")
@@ -49,15 +49,15 @@ public class Config
 
     private static final ForgeConfigSpec.IntValue MINED_NUMBER_LIMIT = BUILDER
             .comment("mined number limit")
-            .defineInRange("minedNumberLimit", 5000, 0, Integer.MAX_VALUE);
+            .defineInRange("minedNumberLimit", 50000, 0, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue MINED_NUMBER_COEFFICIENT = BUILDER
             .comment("mined number coefficient")
-            .defineInRange("minedNumberCoefficient", 0.001, 0, Double.MAX_VALUE);
+            .defineInRange("minedNumberCoefficient", 0.0001, 0, Double.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue JUMP_NUMBER_LIMIT = BUILDER
             .comment("jump number limit")
-            .defineInRange("minedNumberLimit", 10000, 1, Integer.MAX_VALUE);
+            .defineInRange("minedNumberLimit", 100000, 1, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue JUMP_NUMBER_COEFFICIENT = BUILDER
             .comment("jump number coefficient")
@@ -65,19 +65,19 @@ public class Config
 
     private static final ForgeConfigSpec.IntValue MOVE_NUMBER_LIMIT = BUILDER
             .comment("move distance limit")
-            .defineInRange("moveNumberLimit", 200000, 0, Integer.MAX_VALUE);
+            .defineInRange("moveNumberLimit", 10000000, 0, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue MOVE_NUMBER_COEFFICIENT = BUILDER
             .comment("move distance coefficient")
-            .defineInRange("moveNumberCoefficient", 0.00001, 0, Double.MAX_VALUE);
+            .defineInRange("moveNumberCoefficient", 0.0000001, 0, Double.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue SWIM_NUMBER_LIMIT = BUILDER
             .comment("swim distance limit")
-            .defineInRange("swimNumberLimit", 20000, 0, Integer.MAX_VALUE);
+            .defineInRange("swimNumberLimit", 2000000, 0, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue SWIM_NUMBER_COEFFICIENT = BUILDER
             .comment("swim number coefficient")
-            .defineInRange("swimNumberCoefficient", 0.0001, 0, Double.MAX_VALUE);
+            .defineInRange("swimNumberCoefficient", 0.000001, 0, Double.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue CLIMB_SPEED_LIMIT = BUILDER
             .comment("climb speed limit")
@@ -85,11 +85,11 @@ public class Config
 
     private static final ForgeConfigSpec.IntValue CLIMB_NUMBER_LIMIT = BUILDER
             .comment("climb distance limit")
-            .defineInRange("climbNumberLimit", 10000, 0, Integer.MAX_VALUE);
+            .defineInRange("climbNumberLimit", 1000000, 0, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue CLIMB_NUMBER_COEFFICIENT = BUILDER
             .comment("climb number coefficient")
-            .defineInRange("climbNumberCoefficient", 0.00001, 0, Double.MAX_VALUE);
+            .defineInRange("climbNumberCoefficient", 0.0000001, 0, Double.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue BELL_NUMBER_LIMIT = BUILDER
             .comment("ring number limit")
