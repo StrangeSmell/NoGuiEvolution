@@ -25,6 +25,16 @@ public class MoveEvent {
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
                 walkDistance = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
+
+                //forget begin
+                Long nowTime = player.level().getGameTime();
+                Long lastTime = player.getPersistentData().getLong("moveLastTime");
+                int x = (int) ((nowTime - lastTime)/Config.forgetTime);
+                serverPlayer.getStats().setValue(player,Stats.CUSTOM.get(Stats.WALK_ONE_CM),(int)(walkDistance * Math.pow(Config.forgetCoefficient,x)));
+                player.getPersistentData().putLong("moveLastTime",nowTime);
+                walkDistance = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
+                //forget end
+
                 AttributeModifier minedCountModifier = new AttributeModifier(" walkDistance ", walkDistance, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);

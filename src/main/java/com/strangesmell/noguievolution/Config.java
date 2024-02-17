@@ -1,16 +1,9 @@
 package com.strangesmell.noguievolution;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Mod.EventBusSubscriber(modid = NoGuiEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -33,11 +26,11 @@ public class Config
 
     private static final ForgeConfigSpec.DoubleValue KILL_NUMBER_ATTACK_COEFFICIENT = BUILDER
             .comment("kill number attack coefficient")
-            .defineInRange("killNumberAttackCoefficient", 0.001, 0, Double.MAX_VALUE);
+            .defineInRange("killNumberAttackCoefficient", 1000, 0, Double.MAX_VALUE);
 
-    private static final ForgeConfigSpec.IntValue KILL_NUMBER_COEFFICIENT = BUILDER
+    private static final ForgeConfigSpec.DoubleValue KILL_NUMBER_COEFFICIENT = BUILDER
             .comment("Kill number coefficient")
-            .defineInRange("killNumberCoefficient", 1, 0, Integer.MAX_VALUE);
+            .defineInRange("killNumberCoefficient", 0.01, 0, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue USE_NUMBER_LIMIT = BUILDER
             .comment("use number limit")
@@ -115,12 +108,19 @@ public class Config
             .comment("absorb number coefficient")
             .defineInRange("absorbNumberCoefficient", 1, 0, Double.MAX_VALUE);
 
+    private static final ForgeConfigSpec.DoubleValue FORGET_COEFFICIENT = BUILDER
+            .comment("forget coefficient")
+            .defineInRange("forgetCoefficient", 0.95, 0, Double.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue FORGET_TIME = BUILDER
+            .comment("forget time")
+            .defineInRange("forgetTime", 1728000, 1, Integer.MAX_VALUE);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static double killNumberLimitCoefficient;
     public static double killNumberAttackCoefficient;
-    public static int killNumberCoefficient;
+    public static double killNumberCoefficient;
     public static int useNumberLimit;
     public static double useNumberCoefficient;
     public static int minedNumberLimit;
@@ -140,6 +140,8 @@ public class Config
     public static boolean isPercentage;
     public static double absorbNumberLimit;
     public static double absorbNumberCoefficient;
+    public static double forgetCoefficient;
+    public static int forgetTime;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
@@ -166,6 +168,8 @@ public class Config
         isPercentage = IS_PERCENTAGE.get();
         absorbNumberLimit = ABSORB_NUMBER_LIMIT.get();
         absorbNumberCoefficient = ABSORB_NUMBER_COEFFICIENT.get();
+        forgetCoefficient = FORGET_COEFFICIENT.get();
+        forgetTime = FORGET_TIME.get();
 
     }
 }

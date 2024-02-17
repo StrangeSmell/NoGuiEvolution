@@ -25,6 +25,16 @@ public class DamageAbsorbEvent {
             if(!player.level().isClientSide){
                 ServerPlayer serverPlayer = (ServerPlayer) player;
                 count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.DAMAGE_TAKEN));
+
+                //forget begin
+                Long nowTime = player.level().getGameTime();
+                Long lastTime = player.getPersistentData().getLong("damageAbsorbLastTime");
+                int x = (int) ((nowTime - lastTime)/Config.forgetTime);
+                serverPlayer.getStats().setValue(player,Stats.CUSTOM.get(Stats.DAMAGE_TAKEN),(int)(count * Math.pow(Config.forgetCoefficient,x)));
+                player.getPersistentData().putLong("damageAbsorbLastTime",nowTime);
+                count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.DAMAGE_TAKEN));
+                //forget end
+
                 AttributeModifier minedCountModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);

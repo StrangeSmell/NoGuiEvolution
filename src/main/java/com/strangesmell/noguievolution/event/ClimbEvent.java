@@ -29,6 +29,16 @@ public class ClimbEvent {
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
                 count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.CLIMB_ONE_CM));
+
+                //forget begin
+                Long nowTime = player.level().getGameTime();
+                Long lastTime = player.getPersistentData().getLong("climbLastTime");
+                int x = (int) ((nowTime - lastTime)/Config.forgetTime);
+                serverPlayer.getStats().setValue(player,Stats.CUSTOM.get(Stats.CLIMB_ONE_CM),(int)(count * Math.pow(Config.forgetCoefficient,x)));
+                player.getPersistentData().putLong("climbLastTime",nowTime);
+                count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.CLIMB_ONE_CM));
+                //forget end
+
                 AttributeModifier countModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
                 serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(countModifier);
