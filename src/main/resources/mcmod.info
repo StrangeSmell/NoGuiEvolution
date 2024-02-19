@@ -1,0 +1,16 @@
+[
+{
+  "modid": "noguievolution",
+  "name": "No Gui Evolution",
+  "description": "No Gui",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["StrangeSmell"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
