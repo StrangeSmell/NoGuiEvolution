@@ -10,6 +10,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlayerBreakEvent {
     @SubscribeEvent
@@ -31,10 +33,14 @@ public class PlayerBreakEvent {
             player.getPersistentData().putLong("breakLastTime",nowTime);
             minedCount = serverPlayer.getStats().getValue(Stats.BLOCK_MINED.get(event.getState().getBlock()));
             //forget end
-
-            AttributeModifier minedCountModifier = new AttributeModifier(" minedCount ", minedCount, AttributeModifier.Operation.ADDITION);
-            serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
-            serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
+            AttributeModifier countModifier2 = Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                    .getModifier(NoGuiEvolution.uuid);
+            if (countModifier2 != null) {
+                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                        .removeModifier(countModifier2);
+            }
+            AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", minedCount, AttributeModifier.Operation.ADDITION);
+            Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
         }else {
             minedCount =(int) event.getEntity().getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
         }

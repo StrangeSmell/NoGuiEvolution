@@ -12,6 +12,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Objects;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 
 public class BellRingEvent {
@@ -32,10 +35,14 @@ public class BellRingEvent {
                 player.getPersistentData().putLong("ringLastTime",nowTime);
                 count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.BELL_RING));
                 //forget end
-
-                AttributeModifier minedCountModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
+                AttributeModifier countModifier2 = serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())
+                        .getModifier(NoGuiEvolution.uuid);
+                if (countModifier2 != null) {
+                    Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                            .removeModifier(countModifier2);
+                }
+                AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", count, AttributeModifier.Operation.ADDITION);
+                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
             }else {
                 count =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }

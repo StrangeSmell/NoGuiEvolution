@@ -14,6 +14,8 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MoveEvent {
     @SubscribeEvent
@@ -35,10 +37,14 @@ public class MoveEvent {
                 walkDistance = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
                 //forget end
 
-                AttributeModifier minedCountModifier = new AttributeModifier(" walkDistance ", walkDistance, AttributeModifier.Operation.ADDITION);
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
-
+                AttributeModifier countModifier2 = Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                        .getModifier(NoGuiEvolution.uuid);
+                if (countModifier2 != null) {
+                    Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                            .removeModifier(countModifier2);
+                }
+                AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", walkDistance, AttributeModifier.Operation.ADDITION);
+                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
             }else {
                 walkDistance =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }

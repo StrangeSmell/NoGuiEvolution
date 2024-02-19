@@ -28,7 +28,6 @@ public class AttackEvent {
         if(player instanceof ServerPlayer serverPlayer){
             LivingEntity livingEntity = event.getEntity();
             ItemStack itemStack = serverPlayer.getItemInHand(((ServerPlayer) player).getUsedItemHand());
-            if( itemStack ==null ) return;
             Item item = itemStack.getItem();
             int killCount = serverPlayer.getStats().getValue(Stats.ENTITY_KILLED,livingEntity.getType());
             int toolUseCount = serverPlayer.getStats().getValue(Stats.ITEM_USED, item);
@@ -55,9 +54,6 @@ public class AttackEvent {
             if(killCount >= Config.killNumberLimitCoefficient*livingEntity.getMaxHealth()*10 ) killCount = (int)(Config.killNumberLimitCoefficient* livingEntity.getMaxHealth()*10);
             if(toolUseCount>= Config.useNumberLimit) toolUseCount = Config.useNumberLimit;
             event.setAmount( event.getAmount() + killCount *(float) Config.killNumberCoefficient * livingEntity.getMaxHealth()*(float)Config.killNumberAttackCoefficient + toolUseCount * (float)Config.useNumberCoefficient );
-
-
-
 
         }
     }

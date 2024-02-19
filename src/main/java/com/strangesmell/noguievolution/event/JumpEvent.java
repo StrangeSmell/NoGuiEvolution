@@ -14,6 +14,8 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE,value = Dist.CLIENT)
 
 public class JumpEvent {
@@ -34,10 +36,14 @@ public class JumpEvent {
                 player.getPersistentData().putLong("jumpLastTime",nowTime);
                 jumpCount = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.DAMAGE_TAKEN));
                 //forget end
-
-                AttributeModifier minedCountModifier = new AttributeModifier(" jumpCount ", jumpCount, AttributeModifier.Operation.ADDITION);
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(minedCountModifier);
+                AttributeModifier countModifier2 = serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())
+                        .getModifier(NoGuiEvolution.uuid);
+                if (countModifier2 != null) {
+                    Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                            .removeModifier(countModifier2);
+                }
+                AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", jumpCount, AttributeModifier.Operation.ADDITION);
+                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
             }else{
                 jumpCount =(int) livingEntity.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }

@@ -14,6 +14,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 
 public class ClimbEvent {
@@ -38,10 +40,14 @@ public class ClimbEvent {
                 player.getPersistentData().putLong("climbLastTime",nowTime);
                 count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.CLIMB_ONE_CM));
                 //forget end
-
-                AttributeModifier countModifier = new AttributeModifier(" count ", count, AttributeModifier.Operation.ADDITION);
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).removeModifiers();
-                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(countModifier);
+                AttributeModifier countModifier2 = serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())
+                        .getModifier(NoGuiEvolution.uuid);
+                if (countModifier2 != null) {
+                    Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                            .removeModifier(countModifier2);
+                }
+                AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", count, AttributeModifier.Operation.ADDITION);
+                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
             }else {
                 count =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
