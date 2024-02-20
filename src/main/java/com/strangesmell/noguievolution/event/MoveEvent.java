@@ -23,33 +23,45 @@ public class MoveEvent {
         LivingEntity livingEntity =  event.getEntity();
         if(livingEntity == null) return;
         if(livingEntity instanceof Player player){
-            double walkDistance=0;
+            double count=0;
             if(!event.getEntity().level().isClientSide){
                 ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
-                walkDistance = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
+                count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
 
                 //forget begin
                 Long nowTime = player.level().getGameTime();
                 Long lastTime = player.getPersistentData().getLong("moveLastTime");
                 int x = (int) ((nowTime - lastTime)/Config.forgetTime);
-                serverPlayer.getStats().setValue(player,Stats.CUSTOM.get(Stats.WALK_ONE_CM),(int)(walkDistance * Math.pow(Config.forgetCoefficient,x)));
+                serverPlayer.getStats().setValue(player,Stats.CUSTOM.get(Stats.WALK_ONE_CM),(int)(count * Math.pow(Config.forgetCoefficient,x)));
                 player.getPersistentData().putLong("moveLastTime",nowTime);
-                walkDistance = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
+                count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.WALK_ONE_CM));
                 //forget end
 
                 AttributeModifier countModifier2 = Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
-                        .getModifier(NoGuiEvolution.uuid);
+                        .getModifier(NoGuiEvolution.uuidMove);
                 if (countModifier2 != null) {
                     Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
                             .removeModifier(countModifier2);
                 }
-                AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", walkDistance, AttributeModifier.Operation.ADDITION);
-                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
+                AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuidMove," count ", count, AttributeModifier.Operation.ADDITION);
+                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(countModifier);
+                AttributeModifier countModifier3 = Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                        .getModifier(NoGuiEvolution.uuidMove);
+                if (countModifier3 != null) {
+                    Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                            .removeModifier(countModifier3);
+                }
             }else {
-                walkDistance =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+                count =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+                AttributeModifier countModifier2 = Objects.requireNonNull(player.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                        .getModifier(NoGuiEvolution.uuidMove);
+                if (countModifier2 != null) {
+                    Objects.requireNonNull(player.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
+                            .removeModifier(countModifier2);
+                }
             }
             boolean isSprinting = player.isSprinting();
-            Utils.modifier(player,walkDistance, Config.moveNumberCoefficient,Attributes.MOVEMENT_SPEED,Config.moveNumberLimit);
+            Utils.modifier(player,count, Config.moveNumberCoefficient,Attributes.MOVEMENT_SPEED,Config.moveNumberLimit);
             player.setSprinting(isSprinting);
         }
 

@@ -50,7 +50,7 @@ public class Config
 
     private static final ForgeConfigSpec.IntValue JUMP_NUMBER_LIMIT = BUILDER
             .comment("jump number limit")
-            .defineInRange("minedNumberLimit", 100000, 1, Integer.MAX_VALUE);
+            .defineInRange("jumpNumberLimit", 100000, 1, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue JUMP_NUMBER_COEFFICIENT = BUILDER
             .comment("jump number coefficient")

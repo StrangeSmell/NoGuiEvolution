@@ -16,22 +16,19 @@ import java.util.Objects;
 public class PlayerBreakEvent {
     @SubscribeEvent
     public static void playerBreakEvent(PlayerEvent.BreakSpeed event) {
-
-        int minedCount=0;
-
-
+        int count=0;
         if(!event.getEntity().level().isClientSide){
             ServerPlayer serverPlayer =(ServerPlayer) event.getEntity();
-            minedCount = serverPlayer.getStats().getValue(Stats.BLOCK_MINED,event.getState().getBlock());
+            count = serverPlayer.getStats().getValue(Stats.BLOCK_MINED,event.getState().getBlock());
 
             //forget begin
             Player player = event.getEntity();
             Long nowTime = player.level().getGameTime();
             Long lastTime = player.getPersistentData().getLong("breakLastTime");
             int x = (int) ((nowTime - lastTime)/Config.forgetTime);
-            serverPlayer.getStats().setValue(player,Stats.BLOCK_MINED.get(event.getState().getBlock()),(int)(minedCount * Math.pow(Config.forgetCoefficient,x)));
+            serverPlayer.getStats().setValue(player,Stats.BLOCK_MINED.get(event.getState().getBlock()),(int)(count * Math.pow(Config.forgetCoefficient,x)));
             player.getPersistentData().putLong("breakLastTime",nowTime);
-            minedCount = serverPlayer.getStats().getValue(Stats.BLOCK_MINED.get(event.getState().getBlock()));
+            count = serverPlayer.getStats().getValue(Stats.BLOCK_MINED.get(event.getState().getBlock()));
             //forget end
             AttributeModifier countModifier2 = Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
                     .getModifier(NoGuiEvolution.uuid);
@@ -39,15 +36,15 @@ public class PlayerBreakEvent {
                 Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()))
                         .removeModifier(countModifier2);
             }
-            AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", minedCount, AttributeModifier.Operation.ADDITION);
+            AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", count, AttributeModifier.Operation.ADDITION);
             Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
         }else {
-            minedCount =(int) event.getEntity().getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
+            count =(int) event.getEntity().getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
         }
 
         float speed = event.getOriginalSpeed();
-        minedCount = Math.min(minedCount,Config.minedNumberLimit);
-        event.setNewSpeed((float) (speed*(1+minedCount*Config.minedNumberCoefficient)));
+        count = Math.min(count,Config.minedNumberLimit);
+        event.setNewSpeed((float) (speed*(1+count*Config.minedNumberCoefficient)));
     }
 
 }

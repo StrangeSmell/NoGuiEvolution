@@ -44,7 +44,7 @@ public class AttackEvent {
             }
             int x = (int) ((AttackNowTime - AttackLastTime)/Config.forgetTime);
             if(x>0) serverPlayer.getStats().setValue((Player) player,Stats.ENTITY_KILLED.get(livingEntity.getType()),(int) (killCount*Math.pow(Config.forgetCoefficient,x)));
-            player.getPersistentData().putLong("killLastTime"+livingEntity.toString(),player.level().getGameTime());
+            player.getPersistentData().putLong("killLastTime"+livingEntity,player.level().getGameTime());
             killCount = serverPlayer.getStats().getValue(Stats.ENTITY_KILLED,livingEntity.getType());
             toolUseCount = serverPlayer.getStats().getValue(Stats.ITEM_USED, item);
             //forget end

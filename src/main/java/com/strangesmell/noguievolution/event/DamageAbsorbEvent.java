@@ -43,7 +43,7 @@ public class DamageAbsorbEvent {
                             .removeModifier(countModifier2);
                 }
                 AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", count, AttributeModifier.Operation.ADDITION);
-                Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
+                serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get()).addPermanentModifier(countModifier);
             }else{
                 count =(int)player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }

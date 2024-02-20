@@ -35,6 +35,7 @@ public class BellRingEvent {
                 player.getPersistentData().putLong("ringLastTime",nowTime);
                 count = serverPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.BELL_RING));
                 //forget end
+
                 AttributeModifier countModifier2 = serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())
                         .getModifier(NoGuiEvolution.uuid);
                 if (countModifier2 != null) {
@@ -43,6 +44,7 @@ public class BellRingEvent {
                 }
                 AttributeModifier countModifier = new AttributeModifier(NoGuiEvolution.uuid," count ", count, AttributeModifier.Operation.ADDITION);
                 Objects.requireNonNull(serverPlayer.getAttribute(NoGuiEvolution.COUNT_ATTRIBUTE.get())).addPermanentModifier(countModifier);
+
             }else {
                 count =(int) player.getAttributeValue(NoGuiEvolution.COUNT_ATTRIBUTE.get());
             }
